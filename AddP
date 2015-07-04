@@ -1,0 +1,72 @@
+package luan;
+
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.PrintWriter;
+import java.util.Scanner;
+
+/**
+ * @author zhenh_000
+ * @version 0.2
+ * @note
+ * 为文本添加p标签
+ * 下次改进时应该设置字符集
+ */
+
+public class AddP {
+
+	public static void main(String[] args) {
+		Scanner in = new Scanner(System.in);
+		System.out.println("输入要处理的文件夹的绝对路径/");
+		String filepath = in.nextLine();
+		//这样不够自动化
+		System.out.println("选择字符集数字 1.US-ASCII 2.UTF-8 3.UTF-16,其他数字默认是GBK,一般分清UTF-8就行了");
+		String decode;
+		switch (in.next()) {
+		case "1":
+			decode = "US-ASCII";
+			break;
+		case "2":
+			decode = "UTF-8";
+			break;
+		case "3":
+			decode = "UTF-16";
+			break;
+		default:
+			decode = "GBK";
+			break;
+		}
+		File folder = new File(filepath);
+		File[] files = folder.listFiles();
+		for(int i=0;i<files.length;i++) {
+			File out = new File("D:\\Github\\"+files[i].getName());
+			try {
+				System.out.print(out.createNewFile()+": "+out.getName());
+				//BufferedReader read = new BufferedReader(new FileReader(files[i]));
+				BufferedReader read = new BufferedReader(new InputStreamReader(new FileInputStream(files[i]), decode));
+				PrintWriter writer = new PrintWriter(new BufferedWriter(new FileWriter(out)));
+				String line = read.readLine();
+				while(line!=null) {
+					if(!line.equals("")) {
+						writer.println("<p>"+line.trim()+"</p>");
+					}
+					line = read.readLine();
+				}
+				System.out.print("done");
+				System.out.println();
+				read.close();
+				writer.close();
+			} catch (IOException e) {
+				e.printStackTrace();
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		}
+		in.close();
+	}
+}
